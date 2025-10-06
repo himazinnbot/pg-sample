@@ -8,3 +8,4 @@ echo "--- Running post-create-command.sh ---"
 
 # --- スクリプト終了 ---
 echo "--- Setup completed successfully! ---"
+
