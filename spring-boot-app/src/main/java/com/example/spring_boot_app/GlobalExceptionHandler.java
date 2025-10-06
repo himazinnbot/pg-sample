@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import java.util.Map;
 
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,5 +22,13 @@ public class GlobalExceptionHandler {
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .contentType(MediaType.APPLICATION_JSON)
             .body(Map.of("error", e.getMessage()));
+    }
+        @ExceptionHandler(WebClientResponseException.class)
+    public ResponseEntity<Map<String, String>> handleWebClientResponseExceptions(WebClientResponseException e) {
+        log.error("WEBリクエストで例外が発生しました", e);
+        return ResponseEntity
+            .status(e.getStatusCode())
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(Map.of("error", e.getResponseBodyAsString()));
     }
 }

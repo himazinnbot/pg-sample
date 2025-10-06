@@ -12,10 +12,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
 
     /**
      * アプリケーション全体のセキュリティ設定を行います
@@ -27,6 +30,10 @@ public class SecurityConfig {
      * @param http HttpSecurity設定オブジェクト
      * @return SecurityFilterChain
      */
+
+    @Autowired
+    private SupabaseAuthFilter supabaseAuthFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -35,9 +42,13 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(
                         "/", "/*.html", "/*.css", "/*.js", "/favicon.ico"
+                        , "/api/auth/**"
                     ).permitAll()
                 .anyRequest().authenticated()
-            );
+            )
+            // 以下の行のみ追加
+            .addFilterBefore(supabaseAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -62,5 +73,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }
- 
