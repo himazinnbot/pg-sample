@@ -34,7 +34,6 @@
         "Docker.docker"
       ]
     }
-    
   },
   "postCreateCommand": ".devcontainer/post-create-command.sh"
 }
