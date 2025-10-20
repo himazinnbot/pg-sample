@@ -20,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private SupabaseAuthFilter supabaseAuthFilter;
+
     /**
      * アプリケーション全体のセキュリティ設定を行います
      * - CORS（クロスオリジンリソースシェアリング:他オリジンからのアクセス）を有効化
@@ -30,10 +33,6 @@ public class SecurityConfig {
      * @param http HttpSecurity設定オブジェクト
      * @return SecurityFilterChain
      */
-
-    @Autowired
-    private SupabaseAuthFilter supabaseAuthFilter;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -41,14 +40,11 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())            
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(
-                        "/", "/*.html", "/*.css", "/*.js", "/favicon.ico"
-                        , "/api/auth/**"
+                        "/", "/*.html", "/*.css", "/*.js", "/favicon.ico","/api/auth/**"
                     ).permitAll()
                 .anyRequest().authenticated()
             )
-            // 以下の行のみ追加
             .addFilterBefore(supabaseAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
@@ -73,5 +69,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
+ 
