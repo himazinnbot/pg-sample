@@ -39,9 +39,8 @@ public class SupabaseAuthFilter extends OncePerRequestFilter {
             // Supabaseに問い合わせてトークンを検証（同期的に実行）
             Map<String, Object> user = supabaseAuthService.getUserByAccessToken(supabaseToken);
             if (user != null && user.containsKey("id")) {
-                String userId = (String) user.get("id");
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userId,
+                        user.get("id"),
                         null,
                         null
                 );
@@ -50,6 +49,7 @@ public class SupabaseAuthFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             // トークンが無効な場合は何もしない（後続のフィルターで弾かれる）
+            log.error("Failed to authenticate user with Supabase", e);
         }
         filterChain.doFilter(request, response);
     }

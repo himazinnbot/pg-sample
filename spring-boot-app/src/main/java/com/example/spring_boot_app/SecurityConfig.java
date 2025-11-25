@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.beans.factory.annotation.Autowired;
 
 
+
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -33,6 +35,23 @@ public class SecurityConfig {
      * @param http HttpSecurity設定オブジェクト
      * @return SecurityFilterChain
      */
+
+        @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .cors(withDefaults())
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(
+                        "/", "/*.html", "/*.css", "/*.js", "/favicon.ico"
+                    ).permitAll()
+                .anyRequest().authenticated()
+            )
+            // 以下の行のみ追加
+            .addFilterBefore(supabaseAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -41,10 +60,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(
                         "/", "/*.html", "/*.css", "/*.js", "/favicon.ico","/api/auth/**"
-                    ).permitAll()
+               ).permitAll()
                 .anyRequest().authenticated()
-            )
-            .addFilterBefore(supabaseAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            );
         return http.build();
     }
 

@@ -15,6 +15,26 @@ document.addEventListener('DOMContentLoaded', () => {
             showError(error.message);
         }
     };
+        // --- ログイン(メール) ---
+    document.getElementById('login-btn').onclick = async () => {
+        showError('');
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        try {
+            const sessionData = await apiFetch('/api/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+            if (!sessionData.access_token || !sessionData.refresh_token) {
+                throw new Error('トークンが取得できませんでした.');
+            }
+            localStorage.setItem('user_session', JSON.stringify(sessionData));
+            window.location.href = '/memo.html';
+        } catch (error) {
+            showError(error.message);
+        }
+    };
+
 
     // --- ログイン済の確認 (初期表示時) ---
     (async () => {
@@ -28,4 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('user_session', JSON.stringify(sessionData));
         window.location.href = '/memo.html';
     })();
+        // --- Github認証 ---
+    document.getElementById('github-login-btn').onclick = async () => {
+        window.location.href = '/api/auth/oauth2/github';
+    };
 });
