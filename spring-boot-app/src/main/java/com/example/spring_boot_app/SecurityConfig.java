@@ -48,19 +48,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(withDefaults())
-            .csrf(csrf -> csrf.disable())            
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(
-                        "/", "/*.html", "/*.css", "/*.js", "/favicon.ico"
-                    ).permitAll()
-                .anyRequest().authenticated()
-            );
-        return http.build();
-    }
 
     /**
      * CORS（クロスオリジンリソースシェアリング:他オリジンからのアクセス）の設定を行います
