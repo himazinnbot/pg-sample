@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('memo-content').value = '';
     };
 
-    // --- メモ一覧表示 ---
+     // --- メモ一覧表示 ---
     const renderMemos = (memos) => {
         const memoList = document.getElementById('memo-list');
         memoList.innerHTML = '';
@@ -95,7 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
             li.className = 'memo-item';
             li.innerHTML = `
                 <div class="memo-item-header">
-                    <small class="">${new Date(memo.createdAt).toLocaleString()}</small>
+								    // ↓↓↓ この1個所のみ修正　created_at にする
+                    <small class="">${new Date(memo.created_at).toLocaleString()}</small>
+								    // ↑↑↑ この1個所のみ修正
                     <div class="memo-item-actions">
                         <button class="btn-update">更新</button>
                         <button class="btn-delete">削除</button>
